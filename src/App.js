@@ -3,6 +3,7 @@ import './App.css';
 import React, { useState } from 'react';
 
 import { AddUserForm } from './forms/AddUserForm';
+import { EditUserForm } from './forms/EditUserForm';
 import { UserTable } from './tables/UserTable';
 import { UseEffectExample } from './UseEffectExample';
 
@@ -19,10 +20,33 @@ const App = () => {
 	// setUsers - это функция, как будто this.setState({ users: ... })
 	const [users, setUsers] = useState(usersData);
 
+	const [editing, setEditing] = useState(false);
+
+	const initialFormState = { id: null, name: "", username: "" };
+
+	const [currentUser, setCurrentUser] = useState(initialFormState);
+
 	const addUser = user => {
-		user.id = users.length + 1;
+		user.id = Date.now();
 
 		setUsers([...users, user]);
+	};
+
+	const deleteUser = id => {
+		setEditing(false);
+		setUsers(users.filter(user => user.id !== id));
+	};
+
+	const updateUser = (id, updatedUser) => {
+		setEditing(false);
+		console.log(updatedUser);
+		setUsers(users.map(user => (user.id === id ? updatedUser : user)));
+	};
+
+	const editRow = user => {
+		setEditing(true);
+
+		setCurrentUser({ id: user.id, name: user.name, username: user.username });
 	};
 
 	return (
@@ -31,12 +55,26 @@ const App = () => {
 			<UseEffectExample />
 			<div className="flex-row">
 				<div className="flex-large">
-					<h2>Add user</h2>
-					<AddUserForm addUser={addUser} />
+					{editing ? (
+						<>
+							<h2>Edit user</h2>
+							<EditUserForm
+								editing={editing}
+								setEditing={setEditing}
+								currentUser={currentUser}
+								updateUser={updateUser}
+							/>
+						</>
+					) : (
+						<>
+							<h2>Add user</h2>
+							<AddUserForm addUser={addUser} />
+						</>
+					)}
 				</div>
 				<div className="flex-large">
 					<h2>View users</h2>
-					<UserTable users={users} />
+					<UserTable users={users} deleteUser={deleteUser} editRow={editRow} />
 				</div>
 			</div>
 		</div>

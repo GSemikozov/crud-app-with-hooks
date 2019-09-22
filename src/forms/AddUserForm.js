@@ -20,14 +20,14 @@ const AddUserForm = props => {
 
 	return (
 		<form onSubmit={handleSubmit}>
-			<label htmlFor="name">Name {user.name}</label>
+			<label htmlFor="name">Name</label>
 			<input
 				type="text"
 				name="name"
 				value={user.name}
 				onChange={handleInputChange}
 			/>
-			<label htmlFor="username">Username {user.username}</label>
+			<label htmlFor="username">Username</label>
 			<input
 				type="text"
 				name="username"

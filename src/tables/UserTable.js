@@ -1,6 +1,14 @@
 import React from 'react';
 
 const UserTable = props => {
+	const handleDeleteUser = id => {
+		let answer = window.confirm("Are you sure?");
+
+		if (answer) {
+			props.deleteUser(id);
+		}
+	};
+
 	return (
 		<table>
 			<thead>
@@ -17,8 +25,18 @@ const UserTable = props => {
 							<td>{user.name}</td>
 							<td>{user.username}</td>
 							<td>
-								<button className="button muted-button">Edit</button>
-								<button className="button muted-button">Delete</button>
+								<button
+									className="button muted-button"
+									onClick={() => props.editRow(user)}
+								>
+									Edit
+								</button>
+								<button
+									className="button muted-button"
+									onClick={() => handleDeleteUser(user.id)}
+								>
+									Delete
+								</button>
 							</td>
 						</tr>
 					))
