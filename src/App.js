@@ -1,6 +1,6 @@
 import './App.css';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { AddUserForm } from './forms/AddUserForm';
 import { EditUserForm } from './forms/EditUserForm';
@@ -9,16 +9,25 @@ import { UseEffectExample } from './UseEffectExample';
 
 const App = () => {
 	// добавили данные
-	const usersData = [
+	const usersDataArr = [
 		{ id: 1, name: "Tania", username: "floppydiskette" },
 		{ id: 2, name: "Max", username: "maxfarseer" }
 	];
+
+	// храним данные в localStorage
+	const usersDataInitial =
+		JSON.parse(window.localStorage.getItem("users")) || usersDataArr;
 
 	// используем useState хук
 	// в качестве начальных данных, передаем usersData
 	// в users будем хранить пользователей, как будто это state.users
 	// setUsers - это функция, как будто this.setState({ users: ... })
-	const [users, setUsers] = useState(usersData);
+	const [users, setUsers] = useState(usersDataInitial);
+
+	// если users изменился обновляем в localStorage
+	useEffect(() => {
+		window.localStorage.setItem("users", JSON.stringify(users));
+	}, [users]);
 
 	const [editing, setEditing] = useState(false);
 
@@ -28,7 +37,6 @@ const App = () => {
 
 	const addUser = user => {
 		user.id = Date.now();
-
 		setUsers([...users, user]);
 	};
 
@@ -39,13 +47,11 @@ const App = () => {
 
 	const updateUser = (id, updatedUser) => {
 		setEditing(false);
-		console.log(updatedUser);
 		setUsers(users.map(user => (user.id === id ? updatedUser : user)));
 	};
 
 	const editRow = user => {
 		setEditing(true);
-
 		setCurrentUser({ id: user.id, name: user.name, username: user.username });
 	};
 
